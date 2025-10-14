@@ -566,7 +566,7 @@
     function makeGear(settings) {
         var shapesForExport = [];
         var oneTeethAngle = (360 / settings.numberOfTeeth);
-        var pitchRadius = (settings.numberOfTeeth * settings.gerType.pitch) / Math.PI;
+        var pitchRadius = (settings.numberOfTeeth * settings.gerType.pitch) / (Math.PI * 2);
         var pitchDiametr = pitchRadius * 2;
         var outsideDiameter = pitchDiametr - (settings.gerType.pld * 2);
         var outsideRadius = outsideDiameter / 2;
