@@ -120,6 +120,7 @@
 <script>
     var gtConstants = {
         '2': {
+            'pitch': 2.0,
             'grooveDepth': 0.75,
             'pitchFactor': 0.40,
             'pld': 0.254,
@@ -128,6 +129,7 @@
             'outsideRoundDiameter': 0.15
         },
         '3': {
+            'pitch': 3.0,
             'grooveDepth': 1.14,
             'pitchFactor': 0.61,
             'pld': 0.381,
@@ -136,6 +138,7 @@
             'outsideRoundDiameter': 0.25
         },
         '5': {
+            'pitch': 5.0,
             'grooveDepth': 1.93,
             'pitchFactor': 1.03,
             'pld': 0.5715,
@@ -193,7 +196,6 @@
             scene.remove(shape.line);
         });
 
-        settings.exportGear = true;
         shapes = [];
         shapesForExport = [];
         if (settings.toolOffset > 0) {
@@ -324,7 +326,7 @@
 
     function getInsideRoundPoint(angle, config, center, type) {
         var rootRadius = config.rootRadius;
-        var outsideRadius = config.outsideRadius;
+        var outsideRadius = config.baseConfig.gerType.insideDiameter;
         var centerRadius = config.baseConfig.gerType.insideDiameter;
         var hordDistance = outsideRadius - (rootRadius + centerRadius);
         var distance = Math.sqrt(hordDistance * hordDistance + (config.baseConfig.gerType.pitchFactor * config.baseConfig.gerType.pitchFactor));
@@ -564,11 +566,11 @@
     function makeGear(settings) {
         var shapesForExport = [];
         var oneTeethAngle = (360 / settings.numberOfTeeth);
-        var pitchRadius = (((2 * settings.numberOfTeeth) / Math.PI) / 2);
+        var pitchRadius = (settings.numberOfTeeth * settings.gerType.pitch) / Math.PI;
         var pitchDiametr = pitchRadius * 2;
-        var outsideDiameter = pitchDiametr - ((settings.gerType.pld * 2));
+        var outsideDiameter = pitchDiametr - (settings.gerType.pld * 2);
         var outsideRadius = outsideDiameter / 2;
-        var rootDiameter = outsideDiameter - ( settings.gerType.grooveDepth * 2);
+        var rootDiameter = outsideDiameter - (settings.gerType.grooveDepth * 2);
         var rootRadius = rootDiameter / 2;
         gearCenter.x = pitchRadius;
         gearCenter.y = pitchRadius;
