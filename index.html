@@ -176,21 +176,23 @@
             'insideRoundDiameter': 1,
             'outsideRoundDiameter': 0.15
         },
-        '3': {
-            'grooveDepth': 1.14,
-            'pitchFactor': 1.27,
-            'insideDiameter': 0.555,
-            'insideRoundDiameter': 1,
-            'outsideRoundDiameter': 0.15
-        },
-        '5': {
-            'grooveDepth': 1.93,
-            'pitchFactor': 1.78,
-            'insideDiameter': 0.555,
-            'insideRoundDiameter': 1,
-            'outsideRoundDiameter': 0.15
-        }
-    };
+		'3': {
+			'grooveDepth': 1.14,
+			'pitchFactor': 1.27,
+			'pld': 0.381, // adjusted für GT3 (based on 3 mm tooth pitch)
+			'insideDiameter': 0.555,
+			'insideRoundDiameter': 1,
+			'outsideRoundDiameter': 0.15
+		},
+		'5': {
+			'grooveDepth': 1.93,
+			'pitchFactor': 1.78,
+			'pld': 0.571, // adjusted für GT5 (based on 5 mm tooth pitch)
+			'insideDiameter': 0.555,
+			'insideRoundDiameter': 1,
+			'outsideRoundDiameter': 0.15
+		}
+	};
 
 
     var settings = {
@@ -205,7 +207,7 @@
         "speed": 400,
         "offset": 0,
         "laserPower": 200,
-        "gerType": gt2Constants['2'],
+        "gerType": gt2Constants['3'],
         "exportGear": true
 
     };
