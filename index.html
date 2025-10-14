@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GT3 pulley generator</title>
+    <title>GT2/GT3/GT5 Pulley Generator</title>
     <meta charset="utf-8">
     <script type="text/javascript">var switchTo5x = true;</script>
     <script type="text/javascript" src="//w.sharethis.com/button/buttons.js"></script>
@@ -10,15 +10,15 @@
 
     <meta property="og:url"           content="https://loaded-dice.github.io/gt2-gear-genaretor/" />
     <meta property="og:type"          content="website" />
-    <meta property="og:title"         content="GT3 pulley generator" />
-    <meta property="og:description"   content="Generate GT3 pulley for laser cutter or download drawing" />
+    <meta property="og:title"         content="GT2/GT3/GT5 Pulley Generator" />
+    <meta property="og:description"   content="Generate GT2, GT3, or GT5 pulley for laser cutter or download drawing" />
     <meta property="og:image"         content="https://loaded-dice.github.io/gt2-gear-genaretor/pict0.jpeg" />
     <meta property="og:image:url"     content="https://loaded-dice.github.io/gt2-gear-genaretor/pict0.jpeg" />
 
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:image" content="https://loaded-dice.github.io/gt2-gear-genaretor/pict0.jpeg"/>
 
-    <meta name="Keywords" content="gt3 pulley generator, gt3, GT-3, Timing, Pulley, Timing Belt, gear, g-code, gcde, dxf, generator, Pulley drawing, drawing, diy gt3 pulley">
+    <meta name="Keywords" content="gt2 gt3 gt5 pulley generator, Timing, Pulley, Timing Belt, gear, g-code, dxf, generator, Pulley drawing, drawing, diy pulley">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <style>
         body {
@@ -46,8 +46,8 @@
             width: 150px;
         }
 
-        .settings input {
-            width: 50px;
+        .settings input, .settings select {
+            width: 100px;
         }
 
         #g-code {
@@ -61,6 +61,14 @@
 <div class="settings">
     <legend id="params">
         <label for="params">Settings</label>
+        <div>
+            <label>Pulley Type</label>
+            <select onchange="changeParam('gerType', this);">
+                <option value="2">GT2</option>
+                <option value="3" selected>GT3</option>
+                <option value="5">GT5</option>
+            </select>
+        </div>
         <div>
             <label>Number Of Teeth</label>
             <input type="number" placeholder="width" min="3" onchange="changeParam('numberOfTeeth',this);" value="50"/>
@@ -112,28 +120,28 @@
 <script>
     var gtConstants = {
         '2': {
-            'grooveDepth': 0.76,
-            'pitchFactor': 0.41,
+            'grooveDepth': 0.75,
+            'pitchFactor': 0.40,
             'pld': 0.254,
             'insideDiameter': 0.555,
-            'insideRoundDiameter': 1,
+            'insideRoundDiameter': 1.0,
             'outsideRoundDiameter': 0.15
         },
         '3': {
             'grooveDepth': 1.14,
-            'pitchFactor': 1.0,
+            'pitchFactor': 0.61,
             'pld': 0.381,
-            'insideDiameter': 0.7,
-            'insideRoundDiameter': 1.2,
-            'outsideRoundDiameter': 0.15
+            'insideDiameter': 0.85,
+            'insideRoundDiameter': 1.52,
+            'outsideRoundDiameter': 0.25
         },
         '5': {
             'grooveDepth': 1.93,
-            'pitchFactor': 1.5,
-            'pld': 0.571,
-            'insideDiameter': 0.85,
-            'insideRoundDiameter': 1.6,
-            'outsideRoundDiameter': 0.2
+            'pitchFactor': 1.03,
+            'pld': 0.5715,
+            'insideDiameter': 1.44,
+            'insideRoundDiameter': 2.57,
+            'outsideRoundDiameter': 0.416
         }
     };
 
@@ -177,6 +185,8 @@
             settings.laserPower = parseFloat(el.value);
         } else if (type == "toolOffset") {
             settings.toolOffset = parseFloat(el.value);
+        } else if (type == "gerType") {
+            settings.gerType = gtConstants[el.value];
         }
 
         shapes.forEach(function (shape) {
@@ -526,18 +536,15 @@
         var roundRadius = config.baseConfig.gerType.insideDiameter;
         var insideRoundRadius = config.baseConfig.gerType.insideRoundDiameter;
         var outsideRoundRadius = config.baseConfig.gerType.outsideRoundDiameter;
+
         var startPoint = polar(gearCenter, angle, config.rootRadius + (config.baseConfig.toolOffset));
         var teethCenter = polar(gearCenter, angle, (config.rootRadius + roundRadius));
+
         var leftInsideRoundPoint = getInsideRoundPoint(angle, config, teethCenter, 'l');
         var rightInsideRoundPoint = getInsideRoundPoint(angle, config, teethCenter, 'r');
         var leftOutsideRoundPoint = getOutsideRoundPoint(leftInsideRoundPoint, config, angle, 'l');
         var rightOutsideRoundPoint = getOutsideRoundPoint(rightInsideRoundPoint, config, angle, 'r');
-        // Debugging: Visualisiere die Rundungen
-        addCircle(insideRoundRadius, leftInsideRoundPoint); // Linke Einkerbung
-        addCircle(insideRoundRadius, rightInsideRoundPoint); // Rechte Einkerbung
-        addCircle(outsideRoundRadius, leftOutsideRoundPoint); // Linke Zahnspitze
-        addCircle(outsideRoundRadius, rightOutsideRoundPoint); // Rechte Zahnspitze
-        addCircle(roundRadius, teethCenter); // Zahnmitte
+
         if (nextteeth) {
             shapesForExport.push(addArc(leftOutsideRoundPoint.edgeSharedPoint, leftOutsideRoundPoint.sharedPoint, outsideRoundRadius + config.baseConfig.toolOffset));
             shapesForExport.push(addArc(leftOutsideRoundPoint.sharedPoint, leftInsideRoundPoint.sharedPoint, (insideRoundRadius - config.baseConfig.toolOffset) * -1));
@@ -547,6 +554,7 @@
             shapesForExport.push(addArc(rightOutsideRoundPoint.sharedPoint, rightOutsideRoundPoint.edgeSharedPoint, outsideRoundRadius + config.baseConfig.toolOffset));
             shapesForExport.push(addArc(rightOutsideRoundPoint.edgeSharedPoint, nextteeth.start, (config.outsideRadius + config.baseConfig.toolOffset)));
         }
+
         return {
             'start': leftOutsideRoundPoint.edgeSharedPoint,
             'end': rightOutsideRoundPoint.edgeSharedPoint
