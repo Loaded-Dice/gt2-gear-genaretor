@@ -167,33 +167,59 @@
     var fov;
 
 
-    var gt2Constants = {
-        '2': {
-            'grooveDepth': 0.76,
-            'pitchFactor': 0.41,
-            'pld': 0.254,
-            'insideDiameter': 0.555,
-            'insideRoundDiameter': 1,
-            'outsideRoundDiameter': 0.15
-        },
-		'3': {
-			'grooveDepth': 1.14,
-			'pitchFactor': 1.27,
-			'pld': 0.381, // adjusted für GT3 (based on 3 mm tooth pitch)
-			'insideDiameter': 0.555,
-			'insideRoundDiameter': 1,
-			'outsideRoundDiameter': 0.15
-		},
-		'5': {
-			'grooveDepth': 1.93,
-			'pitchFactor': 1.78,
-			'pld': 0.571, // adjusted für GT5 (based on 5 mm tooth pitch)
-			'insideDiameter': 0.555,
-			'insideRoundDiameter': 1,
-			'outsideRoundDiameter': 0.15
-		}
+ //    var gt2Constants = {
+ //        '2': {
+ //            'grooveDepth': 0.76,
+ //            'pitchFactor': 0.41,
+ //            'pld': 0.254,
+ //            'insideDiameter': 0.555,
+ //            'insideRoundDiameter': 1,
+ //            'outsideRoundDiameter': 0.15
+ //        },
+	// 	'3': {
+	// 		'grooveDepth': 1.14,
+	// 		'pitchFactor': 1.27,
+	// 		'pld': 0.381, // adjusted für GT3 (based on 3 mm tooth pitch)
+	// 		'insideDiameter': 0.555,
+	// 		'insideRoundDiameter': 1,
+	// 		'outsideRoundDiameter': 0.15
+	// 	},
+	// 	'5': {
+	// 		'grooveDepth': 1.93,
+	// 		'pitchFactor': 1.78,
+	// 		'pld': 0.571, // adjusted für GT5 (based on 5 mm tooth pitch)
+	// 		'insideDiameter': 0.555,
+	// 		'insideRoundDiameter': 1,
+	// 		'outsideRoundDiameter': 0.15
+	// 	}
+	// };
+//var gtConstants = {
+	var gt2Constants = {
+	    '2': {
+	        'grooveDepth': 0.76,
+	        'pitchFactor': 0.41,
+	        'pld': 0.254,
+	        'insideDiameter': 0.555,
+	        'insideRoundDiameter': 1,
+	        'outsideRoundDiameter': 0.15
+	    },
+	    '3': {
+	        'grooveDepth': 1.14, // korrekt
+	        'pitchFactor': 1.27, // korrekt
+	        'pld': 0.381, // korrekt
+	        'insideDiameter': 0.75, // angepasst für GT3
+	        'insideRoundDiameter': 1.4, // angepasst für breitere Zahnflanken
+	        'outsideRoundDiameter': 0.2 // angepasst für größere Zahnspitzen
+	    },
+	    '5': {
+	        'grooveDepth': 1.93, // korrekt
+	        'pitchFactor': 1.78, // korrekt
+	        'pld': 0.571, // korrekt
+	        'insideDiameter': 0.9, // angepasst für GT5
+	        'insideRoundDiameter': 1.8, // angepasst für breitere Zahnflanken
+	        'outsideRoundDiameter': 0.25 // angepasst für größere Zahnspitzen
+	    }
 	};
-
 
     var settings = {
         "version": 1,
