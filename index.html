@@ -328,7 +328,14 @@
                 z: center.z || 0
             });
         }
-        var geometry = new THREE.BufferGeometry().setFromPoints(circle.path);
+        var geometry = new THREE.BufferGeometry();
+        var positions = new Float32Array(circle.path.length * 3);
+        circle.path.forEach((p, index) => {
+            positions[index * 3] = p.x;
+            positions[index * 3 + 1] = p.y;
+            positions[index * 3 + 2] = p.z;
+        });
+        geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
         circle.line = new THREE.Line(geometry, circle.material);
         circle.line.rotation.x = degToRad(90);
         scene.add(circle.line);
@@ -386,13 +393,13 @@
                 arc.path.push(polar(arc.center, i + addodn, radius));
             }
         }
-        arc.geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(arc.path.length * 3), 3));
-        var index = 0;
-        arc.path.forEach(p => {
-            arc.geometry.attributes.position.array[index++] = p.y;
-            arc.geometry.attributes.position.array[index++] = p.z || 0;
-            arc.geometry.attributes.position.array[index++] = p.x;
+        var positions = new Float32Array(arc.path.length * 3);
+        arc.path.forEach((p, index) => {
+            positions[index * 3] = p.x;
+            positions[index * 3 + 1] = p.y;
+            positions[index * 3 + 2] = p.z || 0;
         });
+        arc.geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
         arc.line = new THREE.Line(arc.geometry, arc.material);
         arc.line.rotation.x = degToRad(90);
         scene.add(arc.line);
@@ -422,14 +429,13 @@
     function getInsideRoundPoint(angle, config, teethCenter, side) {
         var insideRoundRadius = config.baseConfig.gerType.insideRoundDiameter / 2;
         var angleOffset = (config.oneTeethAngle * config.baseConfig.gerType.pitchFactor) / 2;
-        var direction = side === 'l' ? angle - angleOffset : angle + angleOffset;
-        var point = polar(teethCenter, direction, insideRoundRadius);
-        var sharedPoint = polar(point, direction, insideRoundRadius - config.baseConfig.toolOffset);
-        var edgeAngle = side === 'l' ? direction - 90 : direction + 90;
+        var point = polar(teethCenter, side === 'l' ? angle - angleOffset : angle + angleOffset, insideRoundRadius);
+        var sharedPoint = polar(point, side === 'l' ? angle - angleOffset : angle + angleOffset, insideRoundRadius - config.baseConfig.toolOffset);
+        var edgeAngle = side === 'l' ? angle - angleOffset - 90 : angle + angleOffset + 90;
         var edgeSharedPoint = polar(point, edgeAngle, insideRoundRadius - config.baseConfig.toolOffset);
         return {
             point: point,
-            a: direction,
+            a: side === 'l' ? angle - angleOffset : angle + angleOffset,
             sharedPoint: sharedPoint,
             edgeSharedPoint: edgeSharedPoint
         };
@@ -437,9 +443,8 @@
 
     function getOutsideRoundPoint(point, config, angle, side) {
         var outsideRoundRadius = config.baseConfig.gerType.outsideRoundDiameter / 2;
-        var direction = angle;
-        var sharedPoint = polar(point, direction, outsideRoundRadius + config.baseConfig.toolOffset);
-        var edgeAngle = side === 'l' ? direction + 90 : direction - 90;
+        var sharedPoint = polar(point, angle, outsideRoundRadius + config.baseConfig.toolOffset);
+        var edgeAngle = side === 'l' ? angle + 90 : angle - 90;
         var edgeSharedPoint = polar(point, edgeAngle, outsideRoundRadius + config.baseConfig.toolOffset);
         return {
             sharedPoint: sharedPoint,
