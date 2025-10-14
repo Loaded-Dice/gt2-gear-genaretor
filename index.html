@@ -121,19 +121,19 @@
         },
         '3': {
             'grooveDepth': 1.14,
-            'pitchFactor': 1.27,
+            'pitchFactor': 1.0,
             'pld': 0.381,
-            'insideDiameter': 0.75,
-            'insideRoundDiameter': 1.4,
-            'outsideRoundDiameter': 0.2
+            'insideDiameter': 0.7,
+            'insideRoundDiameter': 1.2,
+            'outsideRoundDiameter': 0.15
         },
         '5': {
             'grooveDepth': 1.93,
-            'pitchFactor': 1.78,
+            'pitchFactor': 1.5,
             'pld': 0.571,
-            'insideDiameter': 0.9,
-            'insideRoundDiameter': 1.8,
-            'outsideRoundDiameter': 0.25
+            'insideDiameter': 0.85,
+            'insideRoundDiameter': 1.6,
+            'outsideRoundDiameter': 0.2
         }
     };
 
@@ -153,7 +153,6 @@
         "exportGear": true
     };
 
-    // unchanged
     var gearCenter = {x: 0, y: 0, z: 0};
     var shapes = [];
     var shapesForExport = [];
@@ -533,6 +532,12 @@
         var rightInsideRoundPoint = getInsideRoundPoint(angle, config, teethCenter, 'r');
         var leftOutsideRoundPoint = getOutsideRoundPoint(leftInsideRoundPoint, config, angle, 'l');
         var rightOutsideRoundPoint = getOutsideRoundPoint(rightInsideRoundPoint, config, angle, 'r');
+        // Debugging: Visualisiere die Rundungen
+        addCircle(insideRoundRadius, leftInsideRoundPoint); // Linke Einkerbung
+        addCircle(insideRoundRadius, rightInsideRoundPoint); // Rechte Einkerbung
+        addCircle(outsideRoundRadius, leftOutsideRoundPoint); // Linke Zahnspitze
+        addCircle(outsideRoundRadius, rightOutsideRoundPoint); // Rechte Zahnspitze
+        addCircle(roundRadius, teethCenter); // Zahnmitte
         if (nextteeth) {
             shapesForExport.push(addArc(leftOutsideRoundPoint.edgeSharedPoint, leftOutsideRoundPoint.sharedPoint, outsideRoundRadius + config.baseConfig.toolOffset));
             shapesForExport.push(addArc(leftOutsideRoundPoint.sharedPoint, leftInsideRoundPoint.sharedPoint, (insideRoundRadius - config.baseConfig.toolOffset) * -1));
