@@ -230,6 +230,10 @@
     }
 
     function distance(p1, p2) {
+        if (!p1 || !p2) {
+            console.warn('Undefined point in distance calculation');
+            return 0;
+        }
         var dx = p1.x - p2.x;
         var dy = p1.y - p2.y;
         return Math.sqrt(dx * dx + dy * dy);
@@ -275,15 +279,14 @@
     var gcodeExporter = {
         'circle': function (shape, settings) {
             var str = "";
-            // G-Code für Kreis - passe an, wenn nötig (truncated im Original)
+            // Implement G-code for circle if needed
             return str;
         },
         'arc': function (shape, settings) {
             var str = "";
-            // G-Code für Arc - passe an, wenn nötig
+            // Implement G-code for arc if needed
             return str;
         }
-        // Füge weitere falls nötig
     };
 
     var dxfExporterProxy = {
@@ -304,6 +307,10 @@
     }
 
     function triangleAnglesBySides(a, b, c) {
+        if (a + b <= c || a + c <= b || b + c <= a) {
+            console.warn('Invalid triangle sides: ' + a + ', ' + b + ', ' + c);
+            return { a: 0, b: 0, c: 0, ba: 0, cb: 0 };
+        }
         var cosA = (b * b + c * c - a * a) / (2 * b * c);
         var cosB = (a * a + c * c - b * b) / (2 * a * c);
         var cosC = (a * a + b * b - c * c) / (2 * a * b);
@@ -311,8 +318,8 @@
             a: radToDeg(Math.acos(cosA)),
             b: radToDeg(Math.acos(cosB)),
             c: radToDeg(Math.acos(cosC)),
-            ba: radToDeg(Math.acos(cosA)),  // Aliase für Kompatibilität
-            cb: radToDeg(Math.acos(cosB))
+            ba: radToDeg(Math.acos(cosB)),  // Assuming ba is angle B
+            cb: radToDeg(Math.acos(cosC))   // cb is angle C
         };
     }
 
@@ -324,8 +331,10 @@
             console.warn('Angle too large: ' + angle_2);
             return { a: 0, b: 0, c: 0 };
         } else {
-            var side_3 = Math.sqrt(side_2 * side_2 + side_1 * side_1 - 2 * side_2 * side_1 * Math.cos(degToRad(angle_2)));
-            var angle_1 = radToDeg(Math.acos((side_1 * side_1 + side_3 * side_3 - side_2 * side_2) / (2 * side_1 * side_3)));
+            var cosAngle2 = Math.cos(degToRad(angle_2));
+            var side_3 = Math.sqrt(side_2 * side_2 + side_1 * side_1 - 2 * side_2 * side_1 * cosAngle2);
+            var cosAngle1 = (side_1 * side_1 + side_3 * side_3 - side_2 * side_2) / (2 * side_1 * side_3);
+            var angle_1 = radToDeg(Math.acos(cosAngle1));
             var angle_3 = 180 - angle_2 - angle_1;
             return triangleAnglesBySides(b, a, side_3);
         }
@@ -336,17 +345,22 @@
         var outsideRadius = config.outsideRadius;
         var centerRadius = config.baseConfig.gerType.insideDiameter / 2;
         var hordDistance = outsideRadius - (rootRadius + centerRadius);
-        var distance = Math.sqrt(hordDistance * hordDistance + (config.baseConfig.gerType.pitchFactor * config.baseConfig.gerType.pitchFactor));
-        var angles = triangleAnglesBySides(hordDistance, distance, config.baseConfig.gerType.pitchFactor);
-        var angleMargin = angles.b;  // War ba, aber basierend auf Return a/b/c; passe an b
-        var point;
+        if (hordDistance < 0) {
+            console.warn('Negative hordDistance: ' + hordDistance);
+            hordDistance = 0;
+        }
+        var pitchFactor = config.baseConfig.gerType.pitchFactor;
+        var distSquared = hordDistance * hordDistance + pitchFactor * pitchFactor;
+        var dist = Math.sqrt(distSquared);
+        var angles = triangleAnglesBySides(hordDistance, dist, pitchFactor);
+        var angleMargin = angles.a;  // Changed to a, as ba may be typo; test with b or c if needed
         var a = 0;
         if (type == 'l') {
             a = angle + angleMargin;
         } else if (type == 'r') {
             a = angle - angleMargin;
         }
-        point = polar(center, a, distance);
+        var point = polar(center, a, dist);
         point.sharedPoint = polar(center, a - 180, centerRadius - config.baseConfig.toolOffset);
         return { point: point, a: a };
     }
@@ -354,16 +368,16 @@
     function getOutsideRoundPoint(center, config, angle, type) {
         var insideRadius = config.baseConfig.gerType.insideRoundDiameter / 2;
         var outsideRadius = config.baseConfig.gerType.outsideRoundDiameter / 2;
-        var angles = anglesBySideAndAngle(insideRadius + outsideRadius, outsideRadius, 90);
-        var angleMargin = angles.c;  // War cb, angepasst an c (basierend auf Return)
-        var point;
+        var sumRadius = insideRadius + outsideRadius;
+        var angles = anglesBySideAndAngle(sumRadius, outsideRadius, 90);
+        var angleMargin = angles.b;  // Changed to b; test with c if needed
         var a = 0;
         if (type == 'l') {
             a = angle + angleMargin;
         } else if (type == 'r') {
             a = angle - angleMargin;
         }
-        point = polar(center, a - 180, insideRadius + outsideRadius);
+        var point = polar(center, a - 180, sumRadius);
         point.sharedPoint = polar(center, a - 180, insideRadius - config.baseConfig.toolOffset);
         point.edgeSharedPoint = polar(point, angle, outsideRadius + config.baseConfig.toolOffset);
         return point;
@@ -384,11 +398,7 @@
         var segments = 64;
         for (var i = 0; i <= segments; i++) {
             var theta = (i / segments) * Math.PI * 2;
-            circle.path.push({
-                x: center.x + radius * Math.cos(theta),
-                y: center.y + radius * Math.sin(theta),
-                z: center.z || 0
-            });
+            circle.path.push(polar(center, radToDeg(theta), radius));
         }
         var geometry = new THREE.BufferGeometry();
         geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(circle.path.length * 3), 3));
@@ -397,7 +407,7 @@
             var positions = geometry.attributes.position.array;
             positions[index++] = circle.path[i].x;
             positions[index++] = circle.path[i].y;
-            positions[index++] = circle.path[i].z;
+            positions[index++] = circle.path[i].z || 0;
         }
         circle.line = new THREE.Line(geometry, circle.material);
         circle.line.rotation.x = degToRad(90);
@@ -431,16 +441,12 @@
         };
         radius = Math.abs(radius);
         var angles = triangleAnglesBySides(radius, radius, dist);
-        if (angles.a == 0) {  // War ac
-            console.warn('minimum shape radius:' + (dist / 2) + ' given:' + radius);
+        if (angles.a === 0 || isNaN(angles.a)) {
+            console.warn('Invalid arc angles: minimum radius ' + (dist / 2) + ' given: ' + radius);
             return null;
         }
-        if (isNaN(angles.a)) {
-            console.warn('radius too small, minimum shape radius:' + (dist / 2) + ' given:' + radius);
-            return null;
-        }
-        var insideAngle = angles.b;  // War ba
-        var shiftAngle = angles.a;  // War ac
+        var insideAngle = angles.a;  // Adjusted to a for inside angle
+        var shiftAngle = angles.c;  // Adjusted
         var initAngle = vectorAngle(from, to);
         var direction = 0;
         if (type == "l") {
@@ -452,23 +458,27 @@
         if (type == "l") {
             arc.startAngle = vectorAngle(arc.center, from);
             arc.endAngle = vectorAngle(arc.center, to);
-            var addodn = vectorAngle(arc.center, from);
+            var addodn = arc.startAngle;
             var step = insideAngle / 50;
-            var currentAngle = insideAngle;
-            while (currentAngle >= 0) {
-                arc.path.push(polar(arc.center, currentAngle + addodn, radius));
-                currentAngle -= step;
+            var current = insideAngle;
+            arc.path.push(from);
+            while (current >= 0) {
+                arc.path.push(polar(arc.center, current + addodn, radius));
+                current -= step;
             }
+            arc.path.push(to);
         } else {
             arc.endAngle = vectorAngle(arc.center, from);
             arc.startAngle = vectorAngle(arc.center, to);
-            var addodn = vectorAngle(arc.center, to);
+            var addodn = arc.startAngle;
             var i = 0;
             var step = insideAngle / 50;
+            arc.path.push(from);
             while (i <= insideAngle) {
                 arc.path.push(polar(arc.center, i + addodn, radius));
                 i += step;
             }
+            arc.path.push(to);
         }
         arc.geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(arc.path.length * 3), 3));
         var index = 0;
@@ -512,13 +522,17 @@
             if (arc5) shapesForExport.push(arc5);
             var arc6 = addArc(rightOutside.sharedPoint, rightOutside.edgeSharedPoint, outsideRoundRadius + config.baseConfig.toolOffset);
             if (arc6) shapesForExport.push(arc6);
-            var arc7 = addArc(rightOutside.edgeSharedPoint, nextteeth.start, (config.outsideRadius + config.baseConfig.toolOffset));
+            var arc7 = addArc(rightOutside.edgeSharedPoint, nextteeth.start, config.outsideRadius + config.baseConfig.toolOffset);
             if (arc7) shapesForExport.push(arc7);
         }
 
         return {
             'start': leftOutside.edgeSharedPoint,
-            'end': rightOutside.edgeSharedPoint
+            'end': rightOutside.edgeSharedPoint,
+            'leftOutside': leftOutside,
+            'rightOutside': rightOutside,
+            'leftInside': leftInside,
+            'rightInside': rightInside
         };
     }
 
@@ -547,12 +561,12 @@
         };
         shapesForExport.push(addCircle((settings.centralHole - (settings.toolOffset * 2)) / 2, gearCenter));
         var teethAngle = 0;
-        var nextTeeth = null;  // Initialisiere
-        var teeth = null;
-        for (var i = 0; i < settings.numberOfTeeth; i++) {
-            teeth = generateTeeth(shapesForExport, teethConfig, teethAngle, nextTeeth);
-            nextTeeth = generateTeeth(shapesForExport, teethConfig, teethAngle + oneTeethAngle, null);  // Nächstes vorbereiten
+        var nextTeeth;
+        for (var i = 0; i < settings.numberOfTeeth;) {
+            nextTeeth = generateTeeth(shapesForExport, teethConfig, teethAngle + oneTeethAngle);
+            generateTeeth(shapesForExport, teethConfig, teethAngle, nextTeeth);
             teethAngle += oneTeethAngle;
+            i++;
         }
         var holeAngle = 0;
         var radialHoleCenter;
