@@ -2,25 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GT2 pulley generator</title>
+    <title>GT3 pulley generator</title>
     <meta charset="utf-8">
     <script type="text/javascript">var switchTo5x = true;</script>
     <script type="text/javascript" src="//w.sharethis.com/button/buttons.js"></script>
     <script type="text/javascript" src="//s.sharethis.com/loader.js"></script>
 
-    <meta property="og:url"           content="https://avtehnik.github.io/gt2-gear-genaretor/" />
+    <meta property="og:url"           content="https://loaded-dice.github.io/gt2-gear-genaretor/" />
     <meta property="og:type"          content="website" />
-    <meta property="og:title"         content="Gcode box generator" />
-    <meta property="og:description"   content="Generate box for laser cutter or download drawing" />
-    <meta property="og:image"         content="https://avtehnik.github.io/gt2-gear-genaretor/pict0.jpeg" />
-    <meta property="og:image:url"     content="https://avtehnik.github.io/gt2-gear-genaretor/pict0.jpeg" />
+    <meta property="og:title"         content="GT3 pulley generator" />
+    <meta property="og:description"   content="Generate GT3 pulley for laser cutter or download drawing" />
+    <meta property="og:image"         content="https://loaded-dice.github.io/gt2-gear-genaretor/pict0.jpeg" />
+    <meta property="og:image:url"     content="https://loaded-dice.github.io/gt2-gear-genaretor/pict0.jpeg" />
 
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:image" content="https://avtehnik.github.io/gt2-gear-genaretor/pict0.jpeg"/>
+    <meta property="twitter:image" content="https://loaded-dice.github.io/gt2-gear-genaretor/pict0.jpeg"/>
 
-
-
-    <meta name="Keywords" content="gt2 pulley generator, gt2, GT-2, Timing ,Pulley, Timing Belt, gear, g-code, gcde, dxf, generator, Pulley drawing, drawing, diy gt2 pulley">
+    <meta name="Keywords" content="gt3 pulley generator, gt3, GT-3, Timing, Pulley, Timing Belt, gear, g-code, gcde, dxf, generator, Pulley drawing, drawing, diy gt3 pulley">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <style>
         body {
@@ -56,15 +54,13 @@
             width: 200px;
             height: 100px;
         }
-
     </style>
 </head>
 <body>
-<a href="https://github.com/avtehnik/gt2-gear-genaretor"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+<a href="https://github.com/Loaded-Dice/gt2-gear-genaretor"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
 <div class="settings">
     <legend id="params">
         <label for="params">Settings</label>
-
         <div>
             <label>Number Of Teeth</label>
             <input type="number" placeholder="width" min="3" onchange="changeParam('numberOfTeeth',this);" value="50"/>
@@ -75,23 +71,19 @@
         </div>
         <div>
             <label>Number of radial holes</label>
-            <input type="number" placeholder="height" min="0" onchange="changeParam('numberOfRadialRoles',this);"
-                   value="5"/>
+            <input type="number" placeholder="height" min="0" onchange="changeParam('numberOfRadialRoles',this);" value="5"/>
         </div>
         <div>
             <label>Radial holes diameter</label>
-            <input type="number" placeholder="height" min="0" onchange="changeParam('radialHolesdiameter',this);"
-                   value="3"/>
+            <input type="number" placeholder="height" min="0" onchange="changeParam('radialHolesdiameter',this);" value="3"/>
         </div>
         <div>
             <label>Radial holes distance</label>
-            <input type="number" placeholder="height" min="0" onchange="changeParam('radialHolesDistance',this);"
-                   value="5"/>
+            <input type="number" placeholder="height" min="0" onchange="changeParam('radialHolesDistance',this);" value="5"/>
         </div>
         <div>
             <label>Work Speed</label>
-            <input onchange="changeParam('workSpeed',this);" type="number" min="0" placeholder="Work Speed"
-                   value="150"/>
+            <input onchange="changeParam('workSpeed',this);" type="number" min="0" placeholder="Work Speed" value="150"/>
         </div>
         <div>
             <label>Speed</label>
@@ -103,16 +95,13 @@
         </div>
         <div>
             <label>Tool Offset</label>
-            <input onchange="changeParam('toolOffset',this);" type="number" min="0" placeholder="Tool Offset"
-                   value="0"/>
+            <input onchange="changeParam('toolOffset',this);" type="number" min="0" placeholder="Tool Offset" value="0"/>
         </div>
     </legend>
     <legend id="export">
         <label for="export">Export</label>
-
         <div>
             <button onclick="dataExport('dxf');">DXF</button>
-            <!--<button>SVG</button>-->
             <button onclick="dataExport('g-code');">G code</button>
         </div>
         <textarea id="g-code"></textarea>
@@ -120,106 +109,33 @@
 </div>
 <script src="js/three.js"></script>
 <script src="js/dxf.js"></script>
-<!-- Go to www.addthis.com/dashboard to customize your tools -->
 <script>
-
-
-    var gcodeExporter = {
-        'circle': function (shape, settings) {
-            var str = "";
-            var ofx = shape.center.x - shape.radius;
-            str += "G0 X" + ofx.toFixed(3) + " Y" + shape.center.y.toFixed(3) + " F" + settings.speed + " \n";
-            str += "M5\n";
-            str += "G17 G2 X" + ofx.toFixed(3) + " Y" + shape.center.y.toFixed(3) + " I" + shape.radius.toFixed(3) + " J0.000 F" + settings.workSpeed + " \n";
-            str += "M3\n";
-            return str;
+    var gtConstants = {
+        '2': {
+            'grooveDepth': 0.76,
+            'pitchFactor': 0.41,
+            'pld': 0.254,
+            'insideDiameter': 0.555,
+            'insideRoundDiameter': 1,
+            'outsideRoundDiameter': 0.15
         },
-        'arc': function (shape, settings) {
-            var Theta1 = vectorAngle(shape.center, shape.from);
-            var I = (shape.center.x - (Math.abs(shape.radius) * Math.cos(Theta1 * Math.PI / 180))) - shape.center.x;
-            var J = (shape.center.y - (Math.abs(shape.radius) * Math.sin(Theta1 * Math.PI / 180))) - shape.center.y;
-
-            var str = "";
-            str += "G0 X" + shape.from.x.toFixed(3) + " Y" + shape.from.y.toFixed(3) + " F" + settings.speed + " \n";
-            str += "M3\n";
-            str += (shape.radius > 0 ? "G3" : "G2") + " X" + shape.to.x.toFixed(3) + " Y" + shape.to.y.toFixed(3) + "  I" + I.toFixed(3) + " J" + J.toFixed(3) + "  F" + settings.workSpeed + " \n";
-            str += "M5\n";
-            return str;
-
-
+        '3': {
+            'grooveDepth': 1.14,
+            'pitchFactor': 1.27,
+            'pld': 0.381,
+            'insideDiameter': 0.75,
+            'insideRoundDiameter': 1.4,
+            'outsideRoundDiameter': 0.2
         },
-        'line': function (shape, settings) {
-            return "";
+        '5': {
+            'grooveDepth': 1.93,
+            'pitchFactor': 1.78,
+            'pld': 0.571,
+            'insideDiameter': 0.9,
+            'insideRoundDiameter': 1.8,
+            'outsideRoundDiameter': 0.25
         }
     };
-    var dxfExporterProxy = {
-        'circle': function (shape, settings) {
-            DxfExporter.addCircle(shape.center, shape.radius);
-        },
-        'arc': function (shape, settings) {
-            DxfExporter.addArc(shape.center, Math.abs(shape.radius), shape.startAngle, shape.endAngle);
-
-        },
-        'line': function (shape, settings) {
-            return "";
-        }
-    };
-    var fov;
-
-
- //    var gt2Constants = {
- //        '2': {
- //            'grooveDepth': 0.76,
- //            'pitchFactor': 0.41,
- //            'pld': 0.254,
- //            'insideDiameter': 0.555,
- //            'insideRoundDiameter': 1,
- //            'outsideRoundDiameter': 0.15
- //        },
-	// 	'3': {
-	// 		'grooveDepth': 1.14,
-	// 		'pitchFactor': 1.27,
-	// 		'pld': 0.381, // adjusted für GT3 (based on 3 mm tooth pitch)
-	// 		'insideDiameter': 0.555,
-	// 		'insideRoundDiameter': 1,
-	// 		'outsideRoundDiameter': 0.15
-	// 	},
-	// 	'5': {
-	// 		'grooveDepth': 1.93,
-	// 		'pitchFactor': 1.78,
-	// 		'pld': 0.571, // adjusted für GT5 (based on 5 mm tooth pitch)
-	// 		'insideDiameter': 0.555,
-	// 		'insideRoundDiameter': 1,
-	// 		'outsideRoundDiameter': 0.15
-	// 	}
-	// };
-//var gtConstants = {
-	var gt2Constants = {
-	    '2': {
-	        'grooveDepth': 0.76,
-	        'pitchFactor': 0.41,
-	        'pld': 0.254,
-	        'insideDiameter': 0.555,
-	        'insideRoundDiameter': 1,
-	        'outsideRoundDiameter': 0.15
-	    },
-	    '3': {
-	        'grooveDepth': 1.14, // korrekt
-	        'pitchFactor': 1.27, // korrekt
-	        'pld': 0.381, // korrekt
-	        'insideDiameter': 0.75, // angepasst für GT3
-	        'insideRoundDiameter': 1.4, // angepasst für breitere Zahnflanken
-	        'outsideRoundDiameter': 0.2 // angepasst für größere Zahnspitzen
-	    },
-	    '5': {
-	        'grooveDepth': 1.93, // korrekt
-	        'pitchFactor': 1.78, // korrekt
-	        'pld': 0.571, // korrekt
-	        'insideDiameter': 0.9, // angepasst für GT5
-	        'insideRoundDiameter': 1.8, // angepasst für breitere Zahnflanken
-	        'outsideRoundDiameter': 0.25 // angepasst für größere Zahnspitzen
-	    }
-	};
 
     var settings = {
         "version": 1,
@@ -233,18 +149,17 @@
         "speed": 400,
         "offset": 0,
         "laserPower": 200,
-        "gerType": gt2Constants['3'],
+        "gerType": gtConstants['3'],
         "exportGear": true
-
     };
+
+    // unchanged
     var gearCenter = {x: 0, y: 0, z: 0};
     var shapes = [];
     var shapesForExport = [];
-
     var camera, scene, renderer;
 
     function changeParam(type, el) {
-
         if (type == "numberOfTeeth") {
             settings.numberOfTeeth = parseFloat(el.value);
         } else if (type == "centralHole") {
@@ -282,7 +197,6 @@
             shapesForExport = makeGear(settings);
         } else {
             makeGear(settings);
-
         }
     }
 
@@ -301,25 +215,19 @@
     }
 
     function pointToFixed(p) {
-
         var x = p.x;
         var y = p.y;
-
         return {'x': x.toFixed(3), 'y': y.toFixed(3)};
-
     }
-
 
     function dataExport(type) {
         textarea.value = "";
-
         var offsetX = 0;
         var offsetY = 0;
         var exporter = {};
 
         if (type == 'g-code') {
             exporter = gcodeExporter;
-
             textarea.value += "G90\n";
             textarea.value += "S" + settings.laserPower + "\n";
             textarea.value += "G0 X0.000 Y0.000 F" + settings.workSpeed + "\n";
@@ -334,12 +242,49 @@
             shapesForExport.forEach(function (shape) {
                 exporter[shape.type](shape, settings);
             });
-
             textarea.value = DxfExporter.export();
-
         }
     }
+
     var textarea = document.getElementById('g-code');
+
+    var gcodeExporter = {
+        'circle': function (shape, settings) {
+            var str = "";
+            var ofx = shape.center.x - shape.radius;
+            str += "G0 X" + ofx.toFixed(3) + " Y" + shape.center.y.toFixed(3) + " F" + settings.speed + " \n";
+            str += "M5\n";
+            str += "G17 G2 X" + ofx.toFixed(3) + " Y" + shape.center.y.toFixed(3) + " I" + shape.radius.toFixed(3) + " J0.000 F" + settings.workSpeed + " \n";
+            str += "M3\n";
+            return str;
+        },
+        'arc': function (shape, settings) {
+            var Theta1 = vectorAngle(shape.center, shape.from);
+            var I = (shape.center.x - (Math.abs(shape.radius) * Math.cos(Theta1 * Math.PI / 180))) - shape.center.x;
+            var J = (shape.center.y - (Math.abs(shape.radius) * Math.sin(Theta1 * Math.PI / 180))) - shape.center.y;
+            var str = "";
+            str += "G0 X" + shape.from.x.toFixed(3) + " Y" + shape.from.y.toFixed(3) + " F" + settings.speed + " \n";
+            str += "M3\n";
+            str += (shape.radius > 0 ? "G3" : "G2") + " X" + shape.to.x.toFixed(3) + " Y" + shape.to.y.toFixed(3) + "  I" + I.toFixed(3) + " J" + J.toFixed(3) + "  F" + settings.workSpeed + " \n";
+            str += "M5\n";
+            return str;
+        },
+        'line': function (shape, settings) {
+            return "";
+        }
+    };
+
+    var dxfExporterProxy = {
+        'circle': function (shape, settings) {
+            DxfExporter.addCircle(shape.center, shape.radius);
+        },
+        'arc': function (shape, settings) {
+            DxfExporter.addArc(shape.center, Math.abs(shape.radius), shape.startAngle, shape.endAngle);
+        },
+        'line': function (shape, settings) {
+            return "";
+        }
+    };
 
     function conver_rtg(e) {
         return 180 / Math.PI * e
@@ -348,9 +293,7 @@
         return e / (180 / Math.PI)
     }
 
-
     function trangleAnglesBySides(a, b, c) {
-
         var angle_1 = 0;
         var angle_3 = 0;
         var angle_2 = 0;
@@ -368,11 +311,9 @@
             'ac': angle_3,
             'ba': angle_2
         }
-
     }
 
     function getInsideRoundPoint(angle, config, center, type) {
-
         var rootRadius = config.rootRadius;
         var outsideRadius = config.outsideRadius;
         var centerRadius = config.baseConfig.gerType.insideDiameter;
@@ -392,9 +333,7 @@
         return point;
     }
 
-
     function anglesBySideAndAngle(a, b, y) {
-
         var angle_2 = y;
         var side_1 = b;
         var side_2 = a;
@@ -407,21 +346,13 @@
         }
 
         return trangleAnglesBySides(b, a, side_3);
-
     }
 
-
     function getOutsideRoundPoint(center, config, angle, type) {
-
-
         var insideRadius = config.baseConfig.gerType.insideRoundDiameter;
         var outsideRadius = config.baseConfig.gerType.outsideRoundDiameter;
-
-
         var angles = anglesBySideAndAngle(insideRadius + outsideRadius, outsideRadius, 90);
         var angleMargin = angles.cb;
-
-//        console.log(angles);
         var point;
         var a = 0;
         if (type == 'l') {
@@ -430,18 +361,10 @@
             a = angle - angleMargin;
         }
         point = polar(center, a - 180, insideRadius + outsideRadius);
-
-//        console.log(insideRadius + outsideRadius, config.baseConfig.toolOffset);
-//        addLine(center, point);
-
-//        addCircle(outsideRadius+config.baseConfig.toolOffset, point);
-
         point.sharedPoint = polar(center, a - 180, insideRadius - config.baseConfig.toolOffset);
         point.edgeSharedPoint = polar(point, angle, outsideRadius + config.baseConfig.toolOffset);
-
         return point;
     }
-
 
     function polar(point, direct, dist) {
         direct = degToRad(direct);
@@ -456,11 +379,9 @@
         return (angle * 180) / Math.PI;
     }
 
-
     function addPath(teeth) {
         teeth.geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(teeth.path.length * 3), 3));
         var index = 0;
-
         for (var i = 0, l = teeth.path.length; i < l; i++) {
             var positions = teeth.geometry.attributes.position.array;
             positions[index++] = teeth.path[i].y;
@@ -469,13 +390,10 @@
         }
     }
 
-
     function addLine(from, to, color) {
-
         if (color == null) {
             color = 0xFFFFFF;
         }
-
         var line = {
             'type': 'line',
             'from': from,
@@ -483,35 +401,27 @@
             'geometry': new THREE.BufferGeometry(),
             'material': new THREE.LineBasicMaterial({
                 color: color
-                // color: Math.random() * 0xFFFFFF << 0
             }),
             'path': [from, to],
             'line': null
         };
-
         line.geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(line.path.length * 3), 3));
         var index = 0;
-
         for (var i = 0, l = line.path.length; i < l; i++) {
             var positions = line.geometry.attributes.position.array;
             positions[index++] = line.path[i].y;
             positions[index++] = line.path[i].z;
             positions[index++] = line.path[i].x;
         }
-
-        line.line = new THREE.Line(line.geometry, line.material)
+        line.line = new THREE.Line(line.geometry, line.material);
         line.line.rotation.x = degToRad(90);
-
-
         scene.add(line.line);
         shapes.push(line);
     }
 
     function addCircle(radius, point) {
-
         var geometry = new THREE.BufferGeometry();
         var material = new THREE.LineBasicMaterial();
-
         var circle = {
             'type': 'circle',
             'center': point,
@@ -521,7 +431,6 @@
             'path': [],
             'line': null
         };
-
         var angle = 0;
         while (angle <= 360) {
             if (point) {
@@ -533,29 +442,21 @@
         }
         geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(circle.path.length * 3), 3));
         var index = 0;
-
         for (var i = 0, l = circle.path.length; i < l; i++) {
             var positions = geometry.attributes.position.array;
             positions[index++] = circle.path[i].y;
             positions[index++] = circle.path[i].z;
             positions[index++] = circle.path[i].x;
         }
-
-        circle.line = new THREE.Line(geometry, material)
+        circle.line = new THREE.Line(geometry, material);
         circle.line.rotation.x = degToRad(90);
-
-
         scene.add(circle.line);
         shapes.push(circle);
-
         return circle;
     }
 
     function addArc(from, to, radius) {
         var type = radius > 0 ? 'l' : 'r';
-        var i = 1;
-
-
         var arc = {
             'type': 'arc',
             'from': from,
@@ -572,40 +473,26 @@
             'path': [],
             'line': null
         };
-
         radius = Math.abs(radius);
-
-
-//        addLine(from, to);
-
         var distanse = distance(from, to);
         var angles = trangleAnglesBySides(radius, radius, distanse);
-
         if (angles.ac == 0) {
             console.warn('minimum shape radius:' + (distanse / 2) + ' given:' + radius);
             return
         }
-
         var insideAngle = angles.ba;
         var shiftAngle = angles.ac;
-
         var initAngle = vectorAngle(from, to);
-
         var direction = 0;
         if (type == "l") {
             direction = initAngle + shiftAngle;
-        }
-        else {
+        } else {
             direction = initAngle - shiftAngle;
         }
-
         arc.center = polar(from, direction, radius);
-
-
         if (type == "l") {
             arc.startAngle = vectorAngle(arc.center, from);
             arc.endAngle = vectorAngle(arc.center, to);
-
             var addodn = vectorAngle(arc.center, from);
             while (insideAngle >= 0) {
                 arc.path.push(polar(arc.center, insideAngle + addodn, radius));
@@ -614,54 +501,39 @@
         } else {
             arc.endAngle = vectorAngle(arc.center, from);
             arc.startAngle = vectorAngle(arc.center, to);
-
             var addodn = vectorAngle(arc.center, to);
-            i = 0;
+            var i = 0;
             while (i <= insideAngle) {
                 arc.path.push(polar(arc.center, i + addodn, radius));
                 i += 1;
             }
         }
-//
-//        addLine(arc.center, to, 0x00FF00);
-//        addLine(from, arc.center, 0x0000FF);
-
-
         arc.geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(arc.path.length * 3), 3));
         var index = 0;
-
         for (var i = 0, l = arc.path.length; i < l; i++) {
             var positions = arc.geometry.attributes.position.array;
             positions[index++] = arc.path[i].y;
             positions[index++] = arc.path[i].z;
             positions[index++] = arc.path[i].x;
         }
-
         arc.line = new THREE.Line(arc.geometry, arc.material);
         arc.line.rotation.x = degToRad(90);
         scene.add(arc.line);
         shapes.push(arc);
-
         return arc;
     }
 
-
     function generateTeeth(shapesForExport, config, angle, nextteeth) {
-
         var roundRadius = config.baseConfig.gerType.insideDiameter;
         var insideRoundRadius = config.baseConfig.gerType.insideRoundDiameter;
         var outsideRoundRadius = config.baseConfig.gerType.outsideRoundDiameter;
-
         var startPoint = polar(gearCenter, angle, config.rootRadius + (config.baseConfig.toolOffset));
         var teethCenter = polar(gearCenter, angle, (config.rootRadius + roundRadius));
-
         var leftInsideRoundPoint = getInsideRoundPoint(angle, config, teethCenter, 'l');
         var rightInsideRoundPoint = getInsideRoundPoint(angle, config, teethCenter, 'r');
         var leftOutsideRoundPoint = getOutsideRoundPoint(leftInsideRoundPoint, config, angle, 'l');
         var rightOutsideRoundPoint = getOutsideRoundPoint(rightInsideRoundPoint, config, angle, 'r');
-
         if (nextteeth) {
-
             shapesForExport.push(addArc(leftOutsideRoundPoint.edgeSharedPoint, leftOutsideRoundPoint.sharedPoint, outsideRoundRadius + config.baseConfig.toolOffset));
             shapesForExport.push(addArc(leftOutsideRoundPoint.sharedPoint, leftInsideRoundPoint.sharedPoint, (insideRoundRadius - config.baseConfig.toolOffset) * -1));
             shapesForExport.push(addArc(leftInsideRoundPoint.sharedPoint, startPoint, (roundRadius - config.baseConfig.toolOffset) * -1));
@@ -670,39 +542,25 @@
             shapesForExport.push(addArc(rightOutsideRoundPoint.sharedPoint, rightOutsideRoundPoint.edgeSharedPoint, outsideRoundRadius + config.baseConfig.toolOffset));
             shapesForExport.push(addArc(rightOutsideRoundPoint.edgeSharedPoint, nextteeth.start, (config.outsideRadius + config.baseConfig.toolOffset)));
         }
-//        addCircle(insideRoundRadius, leftInsideRoundPoint);
-//        addCircle(insideRoundRadius, rightInsideRoundPoint);
-//        addCircle(outsideRoundRadius, leftOutsideRoundPoint);
-//        addCircle(outsideRoundRadius, rightOutsideRoundPoint);
-//        addCircle(roundRadius, teethCenter);
         return {
             'start': leftOutsideRoundPoint.edgeSharedPoint,
             'end': rightOutsideRoundPoint.edgeSharedPoint
-
         }
-
     }
 
     function makeGear(settings) {
-
         var shapesForExport = [];
         var oneTeethAngle = (360 / settings.numberOfTeeth);
-
         var pitchRadius = (((2 * settings.numberOfTeeth) / Math.PI) / 2);
         var pitchDiametr = pitchRadius * 2;
         var outsideDiameter = pitchDiametr - ((settings.gerType.pld * 2));
         var outsideRadius = outsideDiameter / 2;
         var rootDiameter = outsideDiameter - ( settings.gerType.grooveDepth * 2);
         var rootRadius = rootDiameter / 2;
-
-
         gearCenter.x = pitchRadius;
         gearCenter.y = pitchRadius;
-
         camera.position.x = pitchRadius;
         camera.position.y = -pitchRadius;
-
-
         var teethConfig = {
             "oneTeethAngle": oneTeethAngle,
             "pitchRadius": pitchRadius,
@@ -713,22 +571,15 @@
             "rootRadius": rootRadius,
             "baseConfig": settings
         };
-
-//        addCircle(rootRadius);
-//        addCircle(outsideRadius - 0.15);
-//        addCircle(pitchRadius);
         shapesForExport.push(addCircle((settings.centralHole - (settings.toolOffset * 2)) / 2, gearCenter));
-
         var teethAngle = 0;
-        var nextTeetch;
+        var nextTeeth;
         for (var i = 0; i < settings.numberOfTeeth;) {
-            nextTeetch = generateTeeth(shapesForExport, teethConfig, teethAngle + oneTeethAngle);
-            generateTeeth(shapesForExport, teethConfig, teethAngle, nextTeetch);
+            nextTeeth = generateTeeth(shapesForExport, teethConfig, teethAngle + oneTeethAngle);
+            generateTeeth(shapesForExport, teethConfig, teethAngle, nextTeeth);
             teethAngle += oneTeethAngle;
             i++;
         }
-
-
         var holeAngle = 0;
         var radialHoleCenter;
         var oneholeAngle = 360 / settings.numberOfRadialRoles;
@@ -739,12 +590,10 @@
                 holeAngle += oneholeAngle;
             }
         }
-        //addCircle(outsideRadius);
         return shapesForExport;
     }
 
     function init() {
-
         if (window.location.hash.length > 1) {
             try {
                 settings = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
@@ -754,10 +603,8 @@
         }
         camera = new THREE.PerspectiveCamera(7.2, window.innerWidth / window.innerHeight, 1, 1000);
         camera.position.z = 400;
-        console.log(camera.fov);
         camera.updateProjectionMatrix();
         scene = new THREE.Scene();
-
         renderer = new THREE.WebGLRenderer();
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -765,14 +612,12 @@
         document.body.appendChild(renderer.domElement);
         settings.toolOffset = 0;
         shapesForExport = makeGear(settings);
-
         window.addEventListener('resize', onWindowResize, false);
         renderer.domElement.addEventListener('wheel', onMouseWheel, false);
     }
 
     var fov = 1, zoom = 7.0;
     function onMouseWheel(e) {
-
         if (e.deltaY > 0) {
             zoom += 0.1;
         } else {
@@ -780,14 +625,12 @@
         }
         camera.fov = fov * zoom;
         camera.updateProjectionMatrix();
-
     }
-    function onWindowResize() {
 
+    function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
-
     }
 
     init();
@@ -801,15 +644,14 @@
     (function (i, s, o, g, r, a, m) {
         i['GoogleAnalyticsObject'] = r;
         i[r] = i[r] || function () {
-                    (i[r].q = i[r].q || []).push(arguments)
-                }, i[r].l = 1 * new Date();
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
         a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
+            m = s.getElementsByTagName(o)[0];
         a.async = 1;
         a.src = g;
         m.parentNode.insertBefore(a, m)
     })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
     ga('create', 'UA-90392164-1', 'auto');
     ga('send', 'pageview');
 </script>
