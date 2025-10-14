@@ -241,7 +241,6 @@
             exporter = gcodeExporter;
             textarea.value += "G90\n";
             textarea.value += "S" + settings.laserPower + "\n";
-            textarea.value += "G0 X0.000 Y0.000 F" + settings.workSpeed + "\n";
             shapesForExport.forEach(function (shape) {
                 textarea.value += exporter[shape.type](shape, settings);
             });
@@ -326,13 +325,12 @@
 
     function getInsideRoundPoint(angle, config, center, type) {
         var rootRadius = config.rootRadius;
-        var outsideRadius = config.baseConfig.gerType.insideDiameter;
+        var outsideRadius = config.outsideRadius;
         var centerRadius = config.baseConfig.gerType.insideDiameter;
         var hordDistance = outsideRadius - (rootRadius + centerRadius);
         var distance = Math.sqrt(hordDistance * hordDistance + (config.baseConfig.gerType.pitchFactor * config.baseConfig.gerType.pitchFactor));
         var angles = trangleAnglesBySides(hordDistance, distance, config.baseConfig.gerType.pitchFactor);
         var angleMargin = angles.ba;
-        var point;
         var a = 0;
         if (type == 'l') {
             a = angle + angleMargin;
@@ -341,7 +339,7 @@
         }
         point = polar(center, a, distance);
         point.sharedPoint = polar(center, a - 180, centerRadius - config.baseConfig.toolOffset);
-        return point;
+        return {point: point, a: a};
     }
 
     function anglesBySideAndAngle(a, b, y) {
@@ -359,21 +357,19 @@
         return trangleAnglesBySides(b, a, side_3);
     }
 
-    function getOutsideRoundPoint(center, config, angle, type) {
+    function getOutsideRoundPoint(center, config, a, type) {
         var insideRadius = config.baseConfig.gerType.insideRoundDiameter;
         var outsideRadius = config.baseConfig.gerType.outsideRoundDiameter;
         var angles = anglesBySideAndAngle(insideRadius + outsideRadius, outsideRadius, 90);
         var angleMargin = angles.cb;
-        var point;
-        var a = 0;
         if (type == 'l') {
-            a = angle + angleMargin;
+            a = a + angleMargin;
         } else if (type == 'r') {
-            a = angle - angleMargin;
+            a = a - angleMargin;
         }
         point = polar(center, a - 180, insideRadius + outsideRadius);
         point.sharedPoint = polar(center, a - 180, insideRadius - config.baseConfig.toolOffset);
-        point.edgeSharedPoint = polar(point, angle, outsideRadius + config.baseConfig.toolOffset);
+        point.edgeSharedPoint = polar(point, a, outsideRadius + config.baseConfig.toolOffset);
         return point;
     }
 
@@ -491,6 +487,10 @@
             console.warn('minimum shape radius:' + (distanse / 2) + ' given:' + radius);
             return
         }
+        if (isNaN(angles.ac)) {
+            console.warn('radius too small, minimum shape radius:' + (distanse / 2) + ' given:' + radius);
+            return
+        }
         var insideAngle = angles.ba;
         var shiftAngle = angles.ac;
         var initAngle = vectorAngle(from, to);
@@ -542,24 +542,25 @@
         var startPoint = polar(gearCenter, angle, config.rootRadius + (config.baseConfig.toolOffset));
         var teethCenter = polar(gearCenter, angle, (config.rootRadius + roundRadius));
 
-        var leftInsideRoundPoint = getInsideRoundPoint(angle, config, teethCenter, 'l');
-        var rightInsideRoundPoint = getInsideRoundPoint(angle, config, teethCenter, 'r');
-        var leftOutsideRoundPoint = getOutsideRoundPoint(leftInsideRoundPoint, config, angle, 'l');
-        var rightOutsideRoundPoint = getOutsideRoundPoint(rightInsideRoundPoint, config, angle, 'r');
+        var leftInside = getInsideRoundPoint(angle, config, teethCenter, 'l');
+        var rightInside = getInsideRoundPoint(angle, config, teethCenter, 'r');
+
+        var leftOutside = getOutsideRoundPoint(leftInside.point, config, leftInside.a, 'l');
+        var rightOutside = getOutsideRoundPoint(rightInside.point, config, rightInside.a, 'r');
 
         if (nextteeth) {
-            shapesForExport.push(addArc(leftOutsideRoundPoint.edgeSharedPoint, leftOutsideRoundPoint.sharedPoint, outsideRoundRadius + config.baseConfig.toolOffset));
-            shapesForExport.push(addArc(leftOutsideRoundPoint.sharedPoint, leftInsideRoundPoint.sharedPoint, (insideRoundRadius - config.baseConfig.toolOffset) * -1));
-            shapesForExport.push(addArc(leftInsideRoundPoint.sharedPoint, startPoint, (roundRadius - config.baseConfig.toolOffset) * -1));
-            shapesForExport.push(addArc(startPoint, rightInsideRoundPoint.sharedPoint, (roundRadius - config.baseConfig.toolOffset) * -1));
-            shapesForExport.push(addArc(rightInsideRoundPoint.sharedPoint, rightOutsideRoundPoint.sharedPoint, (insideRoundRadius - config.baseConfig.toolOffset) * -1));
-            shapesForExport.push(addArc(rightOutsideRoundPoint.sharedPoint, rightOutsideRoundPoint.edgeSharedPoint, outsideRoundRadius + config.baseConfig.toolOffset));
-            shapesForExport.push(addArc(rightOutsideRoundPoint.edgeSharedPoint, nextteeth.start, (config.outsideRadius + config.baseConfig.toolOffset)));
+            shapesForExport.push(addArc(leftOutside.edgeSharedPoint, leftOutside.sharedPoint, outsideRoundRadius + config.baseConfig.toolOffset));
+            shapesForExport.push(addArc(leftOutside.sharedPoint, leftInside.sharedPoint, (insideRoundRadius - config.baseConfig.toolOffset) * -1));
+            shapesForExport.push(addArc(leftInside.sharedPoint, startPoint, (roundRadius - config.baseConfig.toolOffset) * -1));
+            shapesForExport.push(addArc(startPoint, rightInside.sharedPoint, (roundRadius - config.baseConfig.toolOffset) * -1));
+            shapesForExport.push(addArc(rightInside.sharedPoint, rightOutside.sharedPoint, (insideRoundRadius - config.baseConfig.toolOffset) * -1));
+            shapesForExport.push(addArc(rightOutside.sharedPoint, rightOutside.edgeSharedPoint, outsideRoundRadius + config.baseConfig.toolOffset));
+            shapesForExport.push(addArc(rightOutside.edgeSharedPoint, nextteeth.start, (config.outsideRadius + config.baseConfig.toolOffset)));
         }
 
         return {
-            'start': leftOutsideRoundPoint.edgeSharedPoint,
-            'end': rightOutsideRoundPoint.edgeSharedPoint
+            'start': leftOutside.edgeSharedPoint,
+            'end': rightOutside.edgeSharedPoint
         }
     }
 
@@ -653,7 +654,7 @@
     function animate() {
         requestAnimationFrame(animate);
         renderer.render(scene, camera);
-    }
+   }
 </script>
 <script>
     (function (i, s, o, g, r, a, m) {
